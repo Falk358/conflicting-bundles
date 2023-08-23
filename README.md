@@ -43,3 +43,7 @@ tensorboard can be used to show all results (gradients, bundle entropy etc.).
 Per default only the last layer L is evaluated. To evaluate the bundle 
 entropy for each layer set ```--all_conflict_layers="True" ```.
 Details of all parameters that are available can be found in ```config.py```.
+
+## Modification 
+
+This project is a fork and is being modified by implementing *Layerwise Batch Entropy* (LBE) from this [paper](https://arxiv.org/pdf/2208.01134.pdf) 
