@@ -11,6 +11,7 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 import math
+from layerwise_batch_entropy import LBELoss
 
 
 def bundle_entropy(model, train_ds, train_batch_size, train_lr,
@@ -87,6 +88,61 @@ def bundle_entropy(model, train_ds, train_batch_size, train_lr,
 
     return res
 
+
+
+def compute_layerwise_batch_entropy(model, train_ds, all_layers=False):
+    """ Given a dataset train_ds and a model, this function returns
+        foreach a^l the number of bundles and the bundle entropy at time
+        step t.
+
+        Limitation: This implementation is currently only for a single
+        GPU. I.e. you can train your model with multiple GPUs, and evaluate
+        cb with a single gpu.
+
+        param: model - The model that should be evaluated. Note: We assume that model.cb exists.
+                       model.cb is a list of tuples with (a, layer) pairs.
+                       E.g.: model.cb = [(a_1, hidden_layer_1), (a_2, hidden_layer_2)]
+        param: train_ds - Training dataset. Its important to NOT use the test set as we want to check
+                          how the training was negatively influenced. See https://arxiv.org/abs/2011.02956
+        param: all_layers - False to evaluate only a^L, otherwise a^1 to a^L are evaluated
+
+        returns: [[layer_1, batch_entropy_layer_1], ... [layer_L, batch_entropy_layer]
+    """
+    train_batch_size = float(train_batch_size)
+    layer_eval = 0 if all_layers else -1
+    A, Y Y_predicted = [], [], []
+
+
+    for x, y in train_ds:
+        if len(Y) * train_batch_size >= evaluation_size:
+            continue
+
+        current_ypred = model(x, training=False)
+
+        if not hasattr(model, 'cb'):
+            print("(Warning) The provided model has no cb attribute set.")
+            print("Please set a^(l) values in the array cb to measure the bundle entropy.")
+            return None
+
+        cb = model.cb[layer_eval:]
+        A.append([c[0] for c in cb])
+        Y.append(y)
+        Y_predicted.append(current_ypred)
+
+    Y = tf.concat(Y, axis=0)
+    Y_predicted = tf.concat(Y_predicted, axis=0)
+
+    # If needed we return the conflicts for each layer. For evaluation only
+    # a^{(L)} is needed, but e.g. to use it with auto-tune all conflicting
+    # layers are needed. Therefore if all layers are evaluated the complexity
+    # is O(L * |X|)
+    res = []
+    A = zip(*A)
+    lbe_loss = LBELoss(num_layers=len(model.layers))
+    lbe_per_layer = lbe_loss(y_pred=Y_predicted, y_true=Y) # should return list of len model.layers
+    for i, _ in enumerate(A):
+        res.append([i, lbe_per_layer[i]])
+    return res
 
 def _get_weight_amplitude(layer):
     """ With this function we approximate the weight
