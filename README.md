@@ -46,4 +46,4 @@ Details of all parameters that are available can be found in ```config.py```.
 
 ## Modification 
 
-This project is a fork and is being modified by implementing *Layerwise Batch Entropy* (LBE) from this [paper](https://arxiv.org/pdf/2208.01134.pdf) 
+This project is a fork and is being modified by implementing *Layerwise Batch Entropy* (LBE) as a pruning criterion from this [paper](https://arxiv.org/pdf/2208.01134.pdf) 
