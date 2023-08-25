@@ -136,12 +136,12 @@ def compute_layerwise_batch_entropy(model, train_ds, all_layers=False):
     # a^{(L)} is needed, but e.g. to use it with auto-tune all conflicting
     # layers are needed. Therefore if all layers are evaluated the complexity
     # is O(L * |X|)
-    res = []
+    res = dict() 
     A = zip(*A)
     lbe_loss = LBELoss(num_layers=len(model.layers))
-    lbe_per_layer = lbe_loss(y_pred=Y_predicted, y_true=Y) # should return list of len model.layers
+    lbe_per_layer = lbe_loss(y_pred=(Y_predicted, A), y_true=Y) # should return list of len model.layers; A contains activations for each layer
     for i, _ in enumerate(A):
-        res.append([i, lbe_per_layer[i]])
+        res[i] =  lbe_per_layer[i]
     return res
 
 def _get_weight_amplitude(layer):
