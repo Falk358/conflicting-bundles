@@ -110,7 +110,7 @@ def compute_layerwise_batch_entropy(model, train_ds, all_layers=False):
     """
     train_batch_size = float(train_batch_size)
     layer_eval = 0 if all_layers else -1
-    A, Y Y_predicted = [], [], []
+    A, Y ,Y_predicted = [], [], []
 
 
     for x, y in train_ds:

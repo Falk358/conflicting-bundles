@@ -47,3 +47,6 @@ Details of all parameters that are available can be found in ```config.py```.
 ## Modification 
 
 This project is a fork and is being modified by implementing *Layerwise Batch Entropy* (LBE) as a pruning criterion from this [paper](https://arxiv.org/pdf/2208.01134.pdf) 
+
+
+We changed the version of tensorflow-gpu to 2.4.0 from 2.3.1 and added keras to `requirements.txt` in order to make the project compatible with an rtx 3090 card
