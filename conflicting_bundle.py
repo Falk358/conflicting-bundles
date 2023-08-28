@@ -90,7 +90,7 @@ def bundle_entropy(model, train_ds, train_batch_size, train_lr,
 
 
 
-def compute_layerwise_batch_entropy(model, train_ds, all_layers=False):
+def compute_layerwise_batch_entropy(model, train_ds, train_batch_size, all_layers=False):
     """ Given a dataset train_ds and a model, this function returns
         foreach a^l the number of bundles and the bundle entropy at time
         step t.
