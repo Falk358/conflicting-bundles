@@ -114,21 +114,20 @@ def compute_layerwise_batch_entropy(model, train_ds, train_batch_size, all_layer
 
 
     for x, y in train_ds:
-        if len(Y) * train_batch_size >= evaluation_size:
-            continue
 
         current_ypred = model(x, training=False)
+
+        Y.append(y)
+        Y_predicted.append(current_ypred)
+    for i in range(len(model.cb)):
 
         if not hasattr(model, 'cb'):
             print("(Warning) The provided model has no cb attribute set.")
             print("Please set a^(l) values in the array cb to measure the bundle entropy.")
             return None
 
-        cb = model.cb[layer_eval:]
-        A.append([c[0] for c in cb])
-        Y.append(y)
-        Y_predicted.append(current_ypred)
-
+        cb = model.cb
+        A.append(cb[i][0])
     Y = tf.concat(Y, axis=0)
     Y_predicted = tf.concat(Y_predicted, axis=0)
 
@@ -136,13 +135,10 @@ def compute_layerwise_batch_entropy(model, train_ds, train_batch_size, all_layer
     # a^{(L)} is needed, but e.g. to use it with auto-tune all conflicting
     # layers are needed. Therefore if all layers are evaluated the complexity
     # is O(L * |X|)
-    res = dict() 
-    A = zip(*A)
+    #A = zip(*A)
     lbe_loss = LBELoss(num_layers=len(model.layers))
-    lbe_per_layer = lbe_loss(y_pred=(Y_predicted, A), y_true=Y) # should return list of len model.layers; A contains activations for each layer
-    for i, _ in enumerate(A):
-        res[i] =  lbe_per_layer[i]
-    return res
+    lbe_per_layer = lbe_loss.call(y_pred=(Y_predicted, A), y_true=Y) # should return list of len model.layers; A contains activations for each layer
+    return lbe_per_layer
 
 def _get_weight_amplitude(layer):
     """ With this function we approximate the weight
