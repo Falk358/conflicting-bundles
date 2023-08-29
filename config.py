@@ -30,6 +30,10 @@ def get_config():
     argparser.add_argument("--last_epoch_only", default="False", help="Evaluate only last epoch.")
     argparser.add_argument("--conflicting_samples_size", default=64, help="How many samples are used for conflict test. Ignored for auto-tune training.")
     argparser.add_argument("--all_conflict_layers", default="True", help="Evaluate conflicts of each layer. Ignored for auto-tune training.")
+    
+    # LBE threshold for pruning
+    
+    argparser.add_argument("--lbe_threshold", default=0.2, help="threshold of layerwise batch entropy for keeping layer in network")
 
     # Update params
     config = argparser.parse_args()

@@ -20,7 +20,7 @@ def main():
     model = create_model(config)
     model_trained = train(config, train_ds, model)
     # pruning loop here
-    lbe_threshold_lower = 0.2
+    lbe_threshold_lower = config.lbe_threshold 
     new_layer_count = 0
     lbe = compute_layerwise_batch_entropy(model = model_trained, train_ds = train_ds, train_batch_size = config.batch_size, all_layers = True)
     for index, layer in enumerate(model_trained.layers):
@@ -29,6 +29,7 @@ def main():
             continue # we do not have lbe values for all layers (output for example) and need to skip
         if isinstance(layer, tf.keras.layers.Dense):
             if (lbe[index] > lbe_threshold_lower): # throw away layers with lower lbe than lbe_threshold_lower
+                print(f"lbe at layer {index}: {lbe[index]}")
                 print(f"adding layer {index} to pruned model")
                 new_layer_count += 1
     
