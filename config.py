@@ -32,8 +32,7 @@ def get_config():
     argparser.add_argument("--all_conflict_layers", default="True", help="Evaluate conflicts of each layer. Ignored for auto-tune training.")
     
     # LBE threshold for pruning
-    
-    argparser.add_argument("--lbe_threshold", default=0.2, help="threshold of layerwise batch entropy for keeping layer in network")
+    argparser.add_argument("--lbe_threshold", default=0.2, help="threshold of layerwise batch entropy for keeping layer in network.")
 
     # Update params
     config = argparser.parse_args()
@@ -58,6 +57,7 @@ def get_config():
     config.last_epoch_only = _str_to_bool(config.last_epoch_only)
     config.all_conflict_layers = _str_to_bool(config.all_conflict_layers)
     config.conflicting_samples_size = int(config.conflicting_samples_size)
+    config.lbe_threshold = float(config.lbe_threshold)
     config.log_dir = log_dir
     save_config(config)
 

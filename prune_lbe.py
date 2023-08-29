@@ -16,11 +16,12 @@ import numpy as np
 def main():
     #tf.debugging.set_log_device_placement(True)
     config = get_config()
+    print(config)
+    lbe_threshold_lower = config.lbe_threshold
     train_ds, test_ds = load_dataset(config, augment= False)
     model = create_model(config)
     model_trained = train(config, train_ds, model)
     # pruning loop here
-    lbe_threshold_lower = config.lbe_threshold 
     new_layer_count = 0
     lbe = compute_layerwise_batch_entropy(model = model_trained, train_ds = train_ds, train_batch_size = config.batch_size, all_layers = True)
     for index, layer in enumerate(model_trained.layers):
@@ -34,10 +35,10 @@ def main():
                 new_layer_count += 1
     
     model_pruned = FNN_pruned(config,new_layer_count)
-
+    model_pruned_trained = train(config, train_ds, model_pruned)
     loss_original_model, accuracy_original_model, f1_original_model = test(config, test_ds, model_trained)
     print("orginal model finished; testing pruned model")
-    loss_pruned, accuracy_pruned, f1_pruned = test(config, test_ds, model_pruned)
+    loss_pruned, accuracy_pruned, f1_pruned = test(config, test_ds, model_pruned_trained)
 
     print(f"Original Model: \n   Loss {loss_original_model}\n   Accuracy: {accuracy_original_model}\n   F1-score (micro): {f1_original_model}")
     print(f"Pruned Model: \n   Loss {loss_pruned}\n   Accuracy: {accuracy_pruned}\n   F1-score (micro): {f1_pruned}")
