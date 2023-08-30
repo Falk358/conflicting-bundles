@@ -32,7 +32,7 @@ def get_config():
     argparser.add_argument("--all_conflict_layers", default="True", help="Evaluate conflicts of each layer. Ignored for auto-tune training.")
     
     # LBE threshold for pruning
-    argparser.add_argument("--lbe_threshold", default=0.2, help="threshold of layerwise batch entropy for keeping layer in network.")
+    argparser.add_argument("--lbe_threshold", default=30.0, help="threshold of layerwise batch entropy for keeping layer in network.")
 
     # Update params
     config = argparser.parse_args()
@@ -44,14 +44,14 @@ def get_config():
 
     # Load config from previous run or parse cmd args
     config.file = "%s/config.pkl" % log_dir
-    file_config = _load_config_from_file(config)
-    if file_config != None:
-        file_config.all_conflict_layers = _str_to_bool(config.all_conflict_layers)
-        file_config.num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
-        file_config.runs = config.runs
-        file_config.conflicting_samples_size = config.conflicting_samples_size
-        file_config.last_epoch_only = _str_to_bool(config.last_epoch_only)
-        return file_config
+    #file_config = _load_config_from_file(config)
+    #if file_config != None:
+    #    file_config.all_conflict_layers = _str_to_bool(config.all_conflict_layers)
+    #    file_config.num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
+    #    file_config.runs = config.runs
+    #    file_config.conflicting_samples_size = config.conflicting_samples_size
+    #    file_config.last_epoch_only = _str_to_bool(config.last_epoch_only)
+    #    return file_config
 
     config.use_residual = (config.model == "resnet")
     config.last_epoch_only = _str_to_bool(config.last_epoch_only)
