@@ -40,8 +40,8 @@ def main():
     print("orginal model finished; testing pruned model")
     loss_pruned, accuracy_pruned, f1_pruned = test(config, test_ds, model_pruned_trained)
 
-    print(f"Original Model: \n   Loss {loss_original_model}\n   Accuracy: {accuracy_original_model}\n   F1-score (micro): {f1_original_model}")
-    print(f"Pruned Model: \n   Loss {loss_pruned}\n   Accuracy: {accuracy_pruned}\n   F1-score (micro): {f1_pruned}")
+    print(f"Original Model: \n   Loss {loss_original_model}\n   Accuracy: {accuracy_original_model}\n   F1-score (macro): {f1_original_model}")
+    print(f"Pruned Model: \n   Loss {loss_pruned}\n   Accuracy: {accuracy_pruned}\n   F1-score (macro): {f1_pruned}")
         
 
 
